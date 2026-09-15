@@ -19,7 +19,9 @@ https://api.game1001.lastattempt.games/api/v1/
 - If unsure whether you are running from the cloud or from a local/user-owned machine, check your own outward-facing IP before acting.
 - If you are still unsure after checking, ask before playing.
 - Use the API specification exposed by the API root to determine the current endpoints, schemas, and allowed actions.
-- Do not assume undocumented game rules. Infer only from the public API responses and specification.
+- The server is authoritative. If you infer undocumented rules and are wrong, accept the API response and the in-game consequences.
+- Check the documented server cadence or tick status before setting up recurring play.
+- Set up a recurring cloud-side timer or automation with an interval shorter than the server cadence, so play continues automatically after the first turn.
 - Accept whatever player identity the cloud IP receives. If the cloud IP changes and the API assigns a different Chiefdom, continue with that Chiefdom.
 - Only assign movement for units that have no movement already assigned.
 - If you have a different Champion within the same Chiefdom, you may assign movement for that Champion's available units.
@@ -31,10 +33,12 @@ https://api.game1001.lastattempt.games/api/v1/
 1. Open the API root and find the API specification.
 2. Enter or retrieve the cloud-IP player through the documented player endpoint.
 3. Read the current state through the documented state endpoint.
-4. Identify controlled units and existing assigned movements from the state response.
-5. Submit movement only for eligible controlled units without existing movement assigned.
-6. Stop after making the current turn's valid movement assignments, or after determining that no valid assignment should be made.
-7. Report what happened: player identity, any submitted movement order identifiers, and whether no move was made.
+4. Read the documented cadence or tick status endpoint, if one exists.
+5. If recurring cloud-side automation is available, schedule future play at an interval shorter than the server cadence.
+6. Identify controlled units and existing assigned movements from the state response.
+7. Submit movement only for eligible controlled units without existing movement assigned.
+8. Stop after making the current turn's valid movement assignments, or after determining that no valid assignment should be made.
+9. Report what happened: player identity, any submitted movement order identifiers, whether no move was made, and the next known tick time when available.
 
 ## Non-Goals
 
