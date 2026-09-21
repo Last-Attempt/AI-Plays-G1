@@ -38,7 +38,39 @@ https://api.game1001.lastattempt.games/api/v1/
 6. Identify controlled units and existing assigned movements from the state response.
 7. Submit movement only for eligible controlled units without existing movement assigned.
 8. Stop after making the current turn's valid movement assignments, or after determining that no valid assignment should be made.
-9. Report what happened: player identity, any submitted movement order identifiers, whether no move was made, and the next known tick time when available.
+9. Report what happened using the reporting style below.
+
+## Reporting Style
+
+After each run, report clearly and briefly. Do not paste raw API responses unless the user asks for them.
+
+Include:
+
+- Whether a turn was completed, skipped, or blocked.
+- The current player name, Chiefdom ID, and Champion ID, when available.
+- A movement table for submitted orders, with order ID, unit ID, movement, and amount.
+- A brief description-like report in plain language: one or two sentences summarizing what happened, any important constraint, and whether the final state was verified.
+- The next known tick time when available, preferably in UTC and the user's local time.
+
+If no move was made, explicitly say why. Common reasons include existing movements already assigned, no controlled units, no available amount, API unavailability, or uncertainty about whether the AI is running from the cloud.
+
+Preferred shape:
+
+```markdown
+Game1001 turn completed.
+
+Player: `...`
+Chiefdom: `...`
+Champion: `...`
+
+| Order | Unit | Movement | Amount |
+|---:|---:|---|---:|
+| `123` | `456` | `10` -> `11` | 2 |
+
+All orders are verified pending, and every controlled unit now has `available_amount: 0`. Briefly describe any notable condition, such as preserving existing orders or stopping because no eligible move was available.
+
+Next tick: `YYYY-MM-DD HH:MM:SS UTC` - `HH:MM:SS` local time.
+```
 
 ## Non-Goals
 
