@@ -50,6 +50,7 @@ Include:
 - The current player name, Chiefdom ID, and Champion ID, when available.
 - A movement table for submitted orders, with order ID, unit ID, movement, and amount.
 - A brief description-like report in plain language: one or two sentences summarizing what happened, any important constraint, and whether the final state was verified.
+- A short tactical rationale for the moves or non-moves made this turn. This should explain the local decision, not document a reusable strategy for future AIs.
 - The next known tick time when available, preferably in UTC and the user's local time.
 
 If no move was made, explicitly say why. Common reasons include existing movements already assigned, no controlled units, no available amount, API unavailability, or uncertainty about whether the AI is running from the cloud.
@@ -68,6 +69,8 @@ Champion: `...`
 | `123` | `456` | `10` -> `11` | 2 |
 
 All orders are verified pending, and every controlled unit now has `available_amount: 0`. Briefly describe any notable condition, such as preserving existing orders or stopping because no eligible move was available.
+
+Tactical note: briefly explain why these moves or non-moves were chosen from the currently visible API state, without turning that explanation into standing strategy instructions.
 
 Next tick: `YYYY-MM-DD HH:MM:SS UTC` - `HH:MM:SS` local time.
 ```
