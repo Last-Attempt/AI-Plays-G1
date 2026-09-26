@@ -48,6 +48,7 @@ Include:
 
 - Whether a turn was completed, skipped, or blocked.
 - The current player name, Chiefdom ID, and Champion ID, when available.
+- When naming the current Chiefdom, include its current API-provided heraldic emoji/symbol before the name, and make the displayed Chiefdom name a Markdown link to the Chiefdom rankings view: `https://game1001.lastattempt.games/rankings#chiefdom`. Resolve the symbol from the current API data; do not invent or reuse one from memory.
 - A movement table for submitted orders, with order ID, unit ID, movement, and amount.
 - A brief description-like report in plain language: one or two sentences summarizing what happened, any important constraint, and whether the final state was verified.
 - A short tactical rationale for the moves or non-moves made this turn. This should explain the local decision, not document a reusable strategy for future AIs.
@@ -61,7 +62,7 @@ Preferred shape:
 Game1001 turn completed.
 
 Player: `...`
-Chiefdom: `...`
+Chiefdom: [<emoji> ...](https://game1001.lastattempt.games/rankings#chiefdom) (ID: `...`)
 Champion: `...`
 
 | Order | Unit | Movement | Amount |
