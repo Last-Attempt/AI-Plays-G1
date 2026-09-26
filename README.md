@@ -36,9 +36,10 @@ https://api.game1001.lastattempt.games/api/v1/
 4. Read the documented cadence or tick status endpoint, if one exists.
 5. If recurring cloud-side automation is available, schedule future play at an interval shorter than the server cadence.
 6. Identify controlled units and existing assigned movements from the state response.
-7. Submit movement only for eligible controlled units without existing movement assigned.
-8. Stop after making the current turn's valid movement assignments, or after determining that no valid assignment should be made.
-9. Report what happened using the reporting style below.
+7. If the report names the Chiefdom, read the documented hierarchy endpoint (or equivalent current API data) and resolve the exact current Chiefdom record by Chiefdom ID, including its assigned heraldic emoji/symbol. Never infer the emoji from the Chiefdom name.
+8. Submit movement only for eligible controlled units without existing movement assigned.
+9. Stop after making the current turn's valid movement assignments, or after determining that no valid assignment should be made.
+10. Report what happened using the reporting style below.
 
 ## Reporting Style
 
@@ -48,7 +49,8 @@ Include:
 
 - Whether a turn was completed, skipped, or blocked.
 - The current player name, Chiefdom ID, and Champion ID, when available.
-- When naming the current Chiefdom, include its current API-provided heraldic emoji/symbol before the name, and make the displayed Chiefdom name a Markdown link to the Chiefdom rankings view: `https://game1001.lastattempt.games/rankings#chiefdom`. Resolve the symbol from the current API data; do not invent or reuse one from memory.
+- When naming the current Chiefdom, include the exact heraldic emoji/symbol assigned to that Chiefdom in the current API hierarchy data before the name, and make the displayed Chiefdom name a Markdown link to the Chiefdom rankings view: `https://game1001.lastattempt.games/rankings#chiefdom`.
+- Resolve the emoji/symbol by the exact Chiefdom ID, not by interpreting, guessing from, or correlating it with the Chiefdom name. If the current API lookup cannot establish the assigned symbol, do not guess or present an unverified emoji; report the lookup as unavailable or the run as blocked.
 - A movement table for submitted orders, with order ID, unit ID, movement, and amount.
 - A brief description-like report in plain language: one or two sentences summarizing what happened, any important constraint, and whether the final state was verified.
 - A short tactical rationale for the moves or non-moves made this turn. This should explain the local decision, not document a reusable strategy for future AIs.
