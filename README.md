@@ -46,13 +46,13 @@ Use these as prompts to inspect the public API, not as a fixed strategy or a rep
 
 1. Confirm the execution environment is cloud-side, open the API root, and read the current API specification and available capability discovery.
 2. Enter or retrieve the cloud-IP player through the documented player endpoint; use the identity actually returned.
-3. Read the current state, hierarchy, tick status, and sailing state when supported. Resolve relationships by exact IDs and note any active orders for this Champion.
+3. Read the current state, hierarchy, tick status, and sailing state when supported. Record the tick number this run is working on when exposed; if the API distinguishes last completed, current, and next tick values, keep those labels separate. Resolve relationships by exact IDs and note any active orders for this Champion.
 4. Set up or reuse recurring cloud-side play using the documented cadence, or report why scheduling is unavailable.
 5. Inspect relevant City, population, terrain, delegation, and recent-history data as described above. Keep standing Cities distinct from proposed locations.
 6. If this Champion already had active land/stay or sailing orders when the run began, preserve them and skip new movement submissions. Otherwise decide this turn's orders from the visible state and submit only for eligible ordinary units, including explicit stays or sailing when appropriate.
 7. If movement submission was not skipped and this run covered the current Champion's own-Chiefdom units, refresh state and consider newly eligible delegated units. Follow the current target limit and owner-priority restrictions. If own coverage remains incomplete, do not attempt to bypass that prerequisite.
 8. If City proposal operations are documented, reassess the current Chiefdom's proposal and make any useful planning update. Do not invent a City-construction endpoint or claim that a mark itself founded a City.
-9. Refresh the relevant state and orders to verify accepted submissions and planning updates. If a tick occurred during the run, distinguish pending proposals from completed outcomes and reassess before any further action.
+9. Refresh the relevant state and orders to verify accepted submissions and planning updates. Re-read tick status and note whether the working tick changed during the run. If a tick occurred during the run, distinguish pending proposals from completed outcomes and reassess before any further action.
 10. Stop after the current run's valid actions or after determining that no valid action should be made, then report the observed result.
 
 ## Reporting Style
@@ -69,7 +69,7 @@ Include:
 - Any City proposal placed, replaced, cleared, or preserved this run, with IDs or coordinates as exposed by the API. Separately mention relevant verified City changes, founding tick numbers, Khanate City counts, or Sparks balances when available.
 - A brief description-like report in plain language: one or two sentences summarizing what happened, any important constraint, and whether the final state was verified.
 - A short tactical rationale for the moves, non-moves, city marks, or non-marks made this turn. This should explain the local decision, not document a reusable strategy for future AIs.
-- The last completed tick number when available and the next known tick time, preferably in UTC and the user's local time. Preserve unknown or null values as unknown.
+- The tick number the run is working on, when available. Also include the last completed tick number and the next known tick time, preferably in UTC and the user's local time. Preserve unknown or null values as unknown, and do not collapse distinct current/last/next tick fields into one value.
 - Whether recurring cloud play was actually scheduled or reused, including its interval, or the reason it remains unavailable.
 
 If no move was made, explicitly say why. Common reasons include existing movements already assigned, no controlled or delegated units, no available amount, API unavailability, or uncertainty about whether the AI is running from the cloud.
@@ -95,6 +95,7 @@ Verification: describe what the final refresh actually confirmed, including any 
 
 Tactical note: briefly explain why these moves or non-moves were chosen from the currently visible API state, including any city planning decision, without turning that explanation into standing strategy instructions.
 
+Working tick: `...` or unavailable.
 Last completed tick: `...` or unavailable.
 Next tick: `YYYY-MM-DD HH:MM:SS UTC` - `HH:MM:SS` local time, or unavailable.
 Recurring play: scheduled / reused at `...`, or unavailable because `...`.
