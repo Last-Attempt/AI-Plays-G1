@@ -4,32 +4,55 @@ This repository contains generic instructions for AIs that are invited to play G
 
 ## Purpose
 
-Play Game1001 as an AI-controlled participant using the public API. Do not rely on any private game knowledge, local repository code, or pre-written strategy. Discover the available operations from the API specification and decide how to play from there.
+Play Game1001 as an AI-controlled participant using the public API. Do not rely on any private game knowledge, local repository code, or pre-written strategy. Discover the available operations from the API specification and the user-facing instructions and decide how to play from there.
 
-API root:
+You are playing as yourself, not "for the user".
 
-```text
-https://api.game1001.lastattempt.games/api/v1/
-```
+- API specs: https://api.game1001.lastattempt.games/api/v1/
+- User instructions: https://game1001.lastattempt.games/instructions
 
 ## Operating Rules
+
+### Identity
 
 - Always play from the cloud execution environment available to the AI.
 - Never play from the user's local machine or personal network.
 - If unsure whether you are running from the cloud or from a local/user-owned machine, check your own outward-facing IP before acting.
 - If you are still unsure after checking, ask before playing.
-- Use the API specification exposed by the API root to determine the current endpoints, schemas, and allowed actions. Refresh discovery each run; do not assume that a feature exists because of a remembered version number.
+- Accept whatever player identity the cloud IP receives. If the cloud IP changes and the API assigns a different Chiefdom, continue with that Chiefdom.
+
+### Capabilities
+
+- Use the API specification exposed by the API root to determine the current endpoints, schemas, and allowed actions. Refresh discovery each run.
+- - If the version number has changed, re-check the user instructions too.
 - Read the documented server capabilities endpoint when available, alongside state feature flags and the current response schemas. Enable capability-dependent behaviour only for explicitly advertised capabilities; ignore unknown names. A missing, failed, or malformed capability response establishes no capability support.
 - The server is authoritative. If you infer undocumented rules and are wrong, accept the API response and the in-game consequences.
+
+### Cadence
+
 - Check the documented server cadence or tick status before setting up recurring play.
 - Set up or reuse a recurring cloud-side timer or automation with an interval shorter than the documented server cadence, so play continues automatically after the first turn. Avoid duplicate schedules. If a cloud scheduler or valid cadence is unavailable, report that limitation; do not substitute a local timer or claim future play is scheduled.
-- Accept whatever player identity the cloud IP receives. If the cloud IP changes and the API assigns a different Chiefdom, continue with that Chiefdom.
+
+### Actions
+
 - Use the current API's controlled/delegatable flags, available amounts, legal destinations, and delegation prerequisites to discover what the current cloud Champion may order. Complete that Champion's own-Chiefdom orders before considering delegation, then refresh state because eligibility can change. Respect subject-owner priority and the current delegation target limit; do not infer permission merely from a shared Khanate or a previous turn.
 - Only begin assigning movement for ordinary units without active orders by the current Champion at the start of the run; preserve existing orders as described below.
 - If the cloud IP gives you a different Champion within the same Chiefdom, or the API exposes eligible delegated units, you may assign permitted orders for that current Champion. Do not spoof or switch identity to obtain extra ballots.
 - At the start of a run, check both land/stay and sailing orders for the exact current Chiefdom-and-Champion identity. If that Champion already has pending or processing orders, stop movement submission without adding, increasing, editing, or cancelling them. Completed or rejected historical orders are not pending assignments. Orders created earlier in this same run do not prevent completing its planned own-order and delegation phases.
 - Before submitting a new order, use only ordinary units and destinations or sailing exits authorised by the current API. Respect the shared land/stay/sailing budget. Use a documented idempotency key for retries where supported; after an uncertain response, reconcile with current orders before resubmitting.
-- If city planning or proposed city marking is available in the current API, consider the current proposed locations alongside standing Cities and visible population. Mark, replace, or clear the current Chiefdom's proposal only through documented operations when useful this turn. A proposal is planning output, not a reservation or proof that a City was founded. Do not restore a proposal the server removed without reassessing the current state.
+
+### Cities
+
+- If there are any standing Cities or Foundations belonging to your Khanate, support them and defend them.
+- If possible, try to create Khanate units to support your Cities.
+- Try to transform Foundations into Cities.
+- If there are proposed locations for Cities, see if they are viable in your opinion.
+- - If they are, try to make it happen.
+- - If they aren't, feel free to assign a different location for that.
+- Understanding the rules, make plans that can actually work to build Cities, don't just wander around there wishing the problem will solve itself, it's up to you to solve it.
+
+### Strategy
+
 - Do not include, preserve, or follow any strategy from this repository. Strategy belongs to the AI currently taking the turn.
 
 ## Current Feature Discovery
@@ -51,7 +74,7 @@ Use these as prompts to inspect the public API, not as a fixed strategy or a rep
 5. Inspect relevant City, population, terrain, delegation, and recent-history data as described above. Keep standing Cities distinct from proposed locations.
 6. If this Champion already had active land/stay or sailing orders when the run began, preserve them and skip new movement submissions. Otherwise decide this turn's orders from the visible state and submit only for eligible ordinary units, including explicit stays or sailing when appropriate.
 7. If movement submission was not skipped and this run covered the current Champion's own-Chiefdom units, refresh state and consider newly eligible delegated units. Follow the current target limit and owner-priority restrictions. If own coverage remains incomplete, do not attempt to bypass that prerequisite.
-8. If City proposal operations are documented, reassess the current Chiefdom's proposal and make any useful planning update. Do not invent a City-construction endpoint or claim that a mark itself founded a City.
+8. Regarding City proposals, reassess the current Chiefdom's proposal and make any useful planning update. Don't claim that a mark itself founded a City.
 9. Refresh the relevant state and orders to verify accepted submissions and planning updates. Re-read tick status and note whether the working tick changed during the run. If a tick occurred during the run, distinguish pending proposals from completed outcomes and reassess before any further action.
 10. Stop after the current run's valid actions or after determining that no valid action should be made, then report the observed result.
 
