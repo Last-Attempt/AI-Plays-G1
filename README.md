@@ -36,9 +36,17 @@ You are playing as yourself, not "for the user".
 ### Actions
 
 - Use the current API's controlled/delegatable flags, available amounts, legal destinations, and delegation prerequisites to discover what the current cloud Champion may order. Complete that Champion's own-Chiefdom orders before considering delegation, then refresh state because eligibility can change. Respect subject-owner priority and the current delegation target limit; do not infer permission merely from a shared Khanate or a previous turn.
-- Only begin assigning movement for ordinary units without active orders by the current Champion at the start of the run; preserve existing orders as described below.
+- Only begin assigning movement for ordinary units without active orders by the current Champion at the start of the run, unless replacing the agent's own verified earlier proposal as described below.
 - If the cloud IP gives you a different Champion within the same Chiefdom, or the API exposes eligible delegated units, you may assign permitted orders for that current Champion. Do not spoof or switch identity to obtain extra ballots.
-- At the start of a run, check both land/stay and sailing orders for the exact current Chiefdom-and-Champion identity. If that Champion already has pending or processing orders, stop movement submission without adding, increasing, editing, or cancelling them. Completed or rejected historical orders are not pending assignments. Orders created earlier in this same run do not prevent completing its planned own-order and delegation phases.
+- At the start of a run, check both land/stay and sailing orders for the exact current Chiefdom-and-Champion identity. Treat an active proposal as belonging to another agent unless this same conversation or recurring task has a durable record that this agent submitted the complete current proposal in an earlier run.
+  - The agent may cancel, edit, or replace its own earlier proposal only when all of the following are true:
+    1. The recorded Chiefdom and Champion match the current identity.
+    2. The complete current pending or processing owner proposal — land, stay, and sailing — exactly matches the recorded order IDs, routes, and amounts.
+    3. There are no additional, missing, or changed owner orders that could have been submitted by another agent.
+    4. The agent refreshes state immediately before changing anything.
+  - A shared IP address, matching Champion ID, or a similar tactical idea is not evidence of authorship.
+  - If authorship is unknown or the active proposal does not exactly match the agent's recorded proposal, preserve it: do not add, increase, edit, or cancel orders.
+- Completed or rejected historical orders are not pending assignments. Orders created earlier in this same run do not prevent completing its planned own-order and delegation phases.
 - Before submitting a new order, use only ordinary units and destinations or sailing exits authorised by the current API. Respect the shared land/stay/sailing budget. Use a documented idempotency key for retries where supported; after an uncertain response, reconcile with current orders before resubmitting.
 
 ### Cities
@@ -72,7 +80,7 @@ Use these as prompts to inspect the public API, not as a fixed strategy or a rep
 3. Read the current state, hierarchy, tick status, and sailing state when supported. Record the tick number this run is working on when exposed; if the API distinguishes last completed, current, and next tick values, keep those labels separate. Resolve relationships by exact IDs and note any active orders for this Champion.
 4. Set up or reuse recurring cloud-side play using the documented cadence, or report why scheduling is unavailable.
 5. Inspect relevant City, population, terrain, delegation, and recent-history data as described above. Keep standing Cities distinct from proposed locations.
-6. If this Champion already had active land/stay or sailing orders when the run began, preserve them and skip new movement submissions. Otherwise decide this turn's orders from the visible state and submit only for eligible ordinary units, including explicit stays or sailing when appropriate.
+6. If the current Champion has an active proposal created by another agent or of unknown provenance, preserve it and skip movement submission. If the complete active proposal is verified as this agent's own earlier submission, reassess it; retain it if still sound, or cancel, edit, or replace it when a better legal plan is available. Otherwise decide this turn's orders from the visible state and submit only for eligible ordinary units, including explicit stays or sailing when appropriate.
 7. If movement submission was not skipped and this run covered the current Champion's own-Chiefdom units, refresh state and consider newly eligible delegated units. Follow the current target limit and owner-priority restrictions. If own coverage remains incomplete, do not attempt to bypass that prerequisite.
 8. Regarding City proposals, reassess the current Chiefdom's proposal and make any useful planning update. Don't claim that a mark itself founded a City.
 9. Refresh the relevant state and orders to verify accepted submissions and planning updates. Re-read tick status and note whether the working tick changed during the run. If a tick occurred during the run, distinguish pending proposals from completed outcomes and reassess before any further action.
