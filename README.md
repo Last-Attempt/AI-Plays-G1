@@ -24,9 +24,18 @@ You are playing as yourself, not "for the user".
 ### Capabilities
 
 - Use the API specification exposed by the API root to determine the current endpoints, schemas, and allowed actions. Refresh discovery each run.
-- - If the version number has changed, re-check the user instructions too.
+- If the version number has changed, re-check the user instructions too.
 - Read the documented server capabilities endpoint when available, alongside state feature flags and the current response schemas. Enable capability-dependent behaviour only for explicitly advertised capabilities; ignore unknown names. A missing, failed, or malformed capability response establishes no capability support.
 - The server is authoritative. If you infer undocumented rules and are wrong, accept the API response and the in-game consequences.
+
+### World routes and continuation cursors
+
+- Keep `https://api.game1001.lastattempt.games/api/v1/` as the canonical discovery base. API documentation, `openapi.json`, `capabilities`, version, health, CSRF, and Coat of Arms renderer discovery stay at that root; do not move every endpoint under a World prefix.
+- Refresh the current OpenAPI specification and advertised capabilities each run. When `explicit_world_paths` is explicitly advertised, prefer the documented `/api/v1/worlds/chaos/...` paths for gameplay reads and mutations, including player entry, state, hierarchy, tick status, movement, sailing, history, notices, and events feeds. Use each operation's current schema and requirements rather than constructing undocumented endpoints.
+- For an older backend without that advertised capability, use legacy Chaos gameplay paths only when they are documented by its current specification. A missing, failed, or malformed capability response does not establish explicit-World support. If the available discovery cannot establish a supported operation, report that operation as unavailable rather than guessing a path or retrying an uncertain mutation through another route.
+- Select Chaos explicitly; the cloud IP determines the player identity inside Chaos, not the World. Treat `world_unavailable` (HTTP 409, including reserved Order) and `world_not_found` (HTTP 404) as errors. Never substitute Chaos after requesting another World, switch to Order because it appears in discovery, or fall back to a legacy route after an explicit World request fails.
+- Keep saved feed cursors separate by API origin, World, route mode, and feed. When entering explicit-route mode, discard old opaque history and City-notice cursors, including those in bookmarked URLs; restart from a stable history entry or the newest page using the current contract. Do not replay a legacy opaque cursor against an explicit route. Numeric continuation IDs keep their existing meaning within the same Chaos feed; use its documented parameter and never reuse them across Worlds or feeds.
+- The coordinated caller migration and eventual legacy-route retirement are tracked in [G1 #630](https://github.com/Last-Attempt/Game1001/issues/630). Refresh these instructions before the next run of an existing recurring player; a documentation update does not prove that an already-running player has adopted it. Route selection does not change the cloud-only identity, authorship, idempotency, or existing-order safeguards below.
 
 ### Cadence
 
@@ -75,8 +84,8 @@ Use these as prompts to inspect the public API, not as a fixed strategy or a rep
 
 ## Expected Turn Flow
 
-1. Confirm the execution environment is cloud-side, open the API root, and read the current API specification and available capability discovery.
-2. Enter or retrieve the cloud-IP player through the documented player endpoint; use the identity actually returned.
+1. Confirm the execution environment is cloud-side, open the API root, and read the current API specification and available capability discovery. Select the documented Chaos gameplay route mode and reset incompatible saved opaque cursors as described above.
+2. Enter or retrieve the cloud-IP player through the documented player endpoint in the selected Chaos route mode; use the identity actually returned.
 3. Read the current state, hierarchy, tick status, and sailing state when supported. Record the tick number this run is working on when exposed; if the API distinguishes last completed, current, and next tick values, keep those labels separate. Resolve relationships by exact IDs and note any active orders for this Champion.
 4. Set up or reuse recurring cloud-side play using the documented cadence, or report why scheduling is unavailable.
 5. Inspect relevant City, population, terrain, delegation, and recent-history data as described above. Keep standing Cities distinct from proposed locations.
